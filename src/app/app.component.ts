@@ -1,8 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-import {select, Store} from "@ngrx/store";
-import {Observable} from "rxjs";
-import {map} from 'rxjs/operators';
-import {NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router} from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { select, Store } from "@ngrx/store";
+import { Observable } from "rxjs";
+import { map } from 'rxjs/operators';
+import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
+import { AppState } from './reducers';
 
 @Component({
   selector: 'app-root',
@@ -11,37 +12,50 @@ import {NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Route
 })
 export class AppComponent implements OnInit {
 
-    loading = true;
+  loading = true;
+  isloggedIn$: Observable<boolean>;
+  isloggedOut$: Observable<boolean>;
 
-    constructor(private router: Router) {
 
-    }
+  constructor(private router: Router, private store: Store<AppState>) {
 
-    ngOnInit() {
+  }
 
-      this.router.events.subscribe(event  => {
-        switch (true) {
-          case event instanceof NavigationStart: {
-            this.loading = true;
-            break;
-          }
+  ngOnInit() {
 
-          case event instanceof NavigationEnd:
-          case event instanceof NavigationCancel:
-          case event instanceof NavigationError: {
-            this.loading = false;
-            break;
-          }
-          default: {
-            break;
-          }
+    this.router.events.subscribe(event => {
+      switch (true) {
+        case event instanceof NavigationStart: {
+          this.loading = true;
+          break;
         }
-      });
 
-    }
+        case event instanceof NavigationEnd:
+        case event instanceof NavigationCancel:
+        case event instanceof NavigationError: {
+          this.loading = false;
+          break;
+        }
+        default: {
+          break;
+        }
+      }
+    });
 
-    logout() {
+    this.isloggedIn$ = this.store.pipe(
+      map((state) => !!state['auth'].user)
+    );
+    this.isloggedOut$ = this.store.pipe(
+      map((state) => !state['auth'].user)
+    );
 
-    }
+    console.log("AppComponent -> ngOnInit -> this.isloggedOut$", this.isloggedOut$)
+    console.log("AppComponent -> ngOnInit -> this.isloggedIn$", this.isloggedIn$)
+
+  }
+
+  logout() {
+
+  }
 
 }
