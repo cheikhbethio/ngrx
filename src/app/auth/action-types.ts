@@ -1,3 +1,3 @@
-import * as Authentication from './auth.actions';
+import * as Authentication from "./auth.actions";
 
 export { Authentication };
