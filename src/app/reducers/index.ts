@@ -1,27 +1,34 @@
 import {
-	ActionReducer,
-	ActionReducerMap,
-	createFeatureSelector,
-	createSelector,
-	MetaReducer
-} from "@ngrx/store";
-import { environment } from "../../environments/environment";
-import { routerReducer } from "@ngrx/router-store";
+  ActionReducer,
+  ActionReducerMap,
+  createFeatureSelector,
+  createSelector,
+  MetaReducer
+} from '@ngrx/store';
+import { environment } from '../../environments/environment';
+import {routerReducer} from '@ngrx/router-store';
 
 export interface AppState {
 
 }
 
-const logger = function (reducer: ActionReducer<any>): ActionReducer<any> {
-	return (state, action) => {
-		console.log("logger -> state, action", state, action);
-		return reducer(state, action);
-	};
-};
-
 export const reducers: ActionReducerMap<AppState> = {
-	router: routerReducer
+    router: routerReducer
 };
 
+export function logger(reducer:ActionReducer<any>)
+    : ActionReducer<any> {
+    return (state, action) => {
+        console.log("state before: ", state);
+        console.log("action", action);
 
-export const metaReducers: MetaReducer<AppState>[] = !environment.production ? [logger] : [];
+        return reducer(state, action);
+    }
+
+}
+
+
+export const metaReducers: MetaReducer<AppState>[] =
+    !environment.production ? [logger] : [];
+
+
