@@ -1,18 +1,18 @@
-import { Component, OnInit } from "@angular/core";
-import { compareCourses, Course } from "../model/course";
-import { Observable } from "rxjs";
-import { defaultDialogConfig } from "../shared/default-dialog-config";
-import { EditCourseDialogComponent } from "../edit-course-dialog/edit-course-dialog.component";
-import { MatDialog } from "@angular/material/dialog";
-import { map, shareReplay } from "rxjs/operators";
-import { CoursesHttpService } from "../services/courses-http.service";
+import { Component, OnInit } from '@angular/core';
+import { compareCourses, Course } from '../model/course';
+import { Observable } from 'rxjs';
+import { defaultDialogConfig } from '../shared/default-dialog-config';
+import { EditCourseDialogComponent } from '../edit-course-dialog/edit-course-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { map } from 'rxjs/operators';
+import { CourseEntityService } from '../services/courses-entity.service';
 
 
 
 @Component({
 	selector: 'home',
-	templateUrl: "./home.component.html",
-	styleUrls: ["./home.component.css"]
+	templateUrl: './home.component.html',
+	styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
 
@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit {
 
 	constructor(
 		private dialog: MatDialog,
-		private coursesHttpService: CoursesHttpService) {
+		private coursesEntityService: CourseEntityService) {
 
 	}
 
@@ -37,26 +37,21 @@ export class HomeComponent implements OnInit {
 
 	reload() {
 
-		const courses$ = this.coursesHttpService.findAllCourses()
-			.pipe(
-				map(courses => courses.sort(compareCourses)),
-				shareReplay()
-			);
 
-		this.loading$ = courses$.pipe(map(courses => !!courses));
+		// this.loading$ = courses$.pipe(map(courses => !!courses));
 
-		this.beginnerCourses$ = courses$
+		this.beginnerCourses$ = this.coursesEntityService.entities$
 			.pipe(
-				map(courses => courses.filter(course => course.category == "BEGINNER"))
+				map(courses => courses.filter(course => course.category === 'BEGINNER'))
 			);
 
 
-		this.advancedCourses$ = courses$
+		this.advancedCourses$ = this.coursesEntityService.entities$
 			.pipe(
-				map(courses => courses.filter(course => course.category == "ADVANCED"))
+				map(courses => courses.filter(course => course.category === 'ADVANCED'))
 			);
 
-		this.promoTotal$ = courses$
+		this.promoTotal$ = this.coursesEntityService.entities$
 			.pipe(
 				map(courses => courses.filter(course => course.promo).length)
 			);
@@ -68,8 +63,8 @@ export class HomeComponent implements OnInit {
 		const dialogConfig = defaultDialogConfig();
 
 		dialogConfig.data = {
-			dialogTitle: "Create Course",
-			mode: "create"
+			dialogTitle: 'Create Course',
+			mode: 'create'
 		};
 
 		this.dialog.open(EditCourseDialogComponent, dialogConfig);

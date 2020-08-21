@@ -28,6 +28,7 @@ import { compareLessons, Lesson } from './model/lesson';
 import { CourseEntityService } from './services/courses-entity.service';
 import { CourseResolver } from './courses-resolver';
 import { CourseDataService } from './services/courses-data.service';
+import { LessonEntityService } from './services/lesson-entity.service';
 
 
 export const coursesRoutes: Routes = [
@@ -49,7 +50,12 @@ export const coursesRoutes: Routes = [
 ];
 
 const entityMetadata: EntityMetadataMap = {
-	Course: {}
+	Course: {
+		sortComparer: compareCourses
+	},
+	Lessson: {
+		sortComparer: compareLessons
+	}
 };
 
 @NgModule({
@@ -89,7 +95,8 @@ const entityMetadata: EntityMetadataMap = {
 		CoursesHttpService,
 		CourseEntityService,
 		CourseResolver,
-		CourseDataService
+		CourseDataService,
+		LessonEntityService,
 	]
 })
 export class CoursesModule {
