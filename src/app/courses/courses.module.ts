@@ -53,7 +53,7 @@ const entityMetadata: EntityMetadataMap = {
 	Course: {
 		sortComparer: compareCourses
 	},
-	Lessson: {
+	Lesson: {
 		sortComparer: compareLessons
 	}
 };
@@ -101,9 +101,11 @@ const entityMetadata: EntityMetadataMap = {
 })
 export class CoursesModule {
 
-	constructor(entityDefinitionService: EntityDefinitionService,
+	constructor(
+		entityDefinitionService: EntityDefinitionService,
 		entityDataService: EntityDataService,
-		courseDataService: CourseDataService) {
+		courseDataService: CourseDataService
+	) {
 		entityDefinitionService.registerMetadataMap(entityMetadata);
 		entityDataService.registerService('Course', courseDataService);
 	}
